@@ -1,0 +1,166 @@
+# registardos--------------------------------------------------------
+# @app.route("/usuariosr", methods=["GET"])
+# def listar_usuariosr():
+#     try:
+#         cursor = conexion.connection.cursor()
+#         sql = "SELECT * FROM usuariosr ORDER BY userName ASC"
+#         cursor.execute(sql)
+#         datos = cursor.fetchall()
+#         usuariosr = []
+#         for fila in datos:
+#             usuarior = {
+#                 "userName": fila[0], 
+#                 "email": fila[1], 
+#                 "password": fila[2]
+#             }
+#             usuariosr.append(usuarior)
+#         return jsonify({'usuariosr': usuariosr, 'mensaje': 'Usuarios listados', "exito": True})
+#     except Exception as ex:
+#         return jsonify({"mensaje": "Error: {}".format(ex), 'exito': False})
+ 
+# def pagina_no_encontrada(error):
+#     return jsonify({"mensaje": "Error BD: {}".format(error), 'exito': False})
+ 
+# def leer_usuarior_bd(userName_usuarior):
+#     try:
+#         cursor = conexion.connection.cursor()
+#         sql = "SELECT userName, email, password FROM usuariosr WHERE userName = %s"
+#         cursor.execute(sql, (userName_usuarior,))
+#         datos = cursor.fetchone()
+#         if datos != None:
+#             usuarior = {
+#                 "userName": datos[0], 
+#                 "email": datos[1], 
+#                 "password": datos[2]
+#             }
+#             return usuarior
+#         else:
+#             return None
+#     except Exception as ex:
+#         raise ex
+ 
+# @app.route('/usuariosr/<userName_usuarior>', methods=['GET'])
+# def leer_usuarior(userName_usuarior):
+#     try:
+#         usuarior = leer_usuarior_bd(userName_usuarior)
+#         if usuarior != None:
+#             return jsonify({'usuarior': usuarior, 'mensaje': "Usuario encontrado.", 'exito': True})
+#         else:
+#             return jsonify({'mensaje': "Usuario no encontrado.", 'exito': False})
+#     except Exception as ex:
+#         return jsonify({'mensaje': "Error", 'exito': False})
+ 
+# @app.route('/usuariosr', methods=['POST'])
+# def registrar_usuarior():
+#     try:
+#         usuarior = leer_usuarior_bd(request.json['userName'])
+#         if usuarior != None:
+#             return jsonify({'mensaje': "Usuario ya existe, no se puede duplicar.", 'exito': False})
+#         else:
+#             cursor = conexion.connection.cursor()
+#             sql = """INSERT INTO usuariosr (userName, email, password)
+#             VALUES (%s, %s, %s)"""
+#             valores = (
+#                 request.json['userName'],
+#                 request.json['email'],
+#                 request.json['password']
+#             )
+#             cursor.execute(sql, valores)
+#             conexion.connection.commit()
+#             return jsonify({'mensaje': "Usuario registrado.", 'exito': True})
+#     except Exception as ex:
+#         return jsonify({'mensaje': "Error: {}".format(ex), 'exito': False})
+
+
+
+
+
+
+
+
+<div class="container px-6 py-8 mx-auto font-sans">
+    <div class="bg-white shadow-2xl rounded-xl p-6">
+      <!-- Título -->
+      <h1 class="text-4xl font-bold text-gray-800 text-center mb-6">
+        Lista de Usuarios
+      </h1>
+  
+      <!-- Filtro y botones -->
+      <div class="mb-6 flex justify-between items-center">
+        <!-- Campo de filtro -->
+        <div class="flex items-center">
+          <label for="filter" class="text-gray-700 text-lg font-medium mr-4">
+            Filtrar por:
+          </label>
+          <input
+            [(ngModel)]="listFilter"
+            id="filter"
+            class="px-4 py-2 w-72 rounded-lg border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 placeholder-gray-400"
+            placeholder="Buscar usuarios..."
+          />
+        </div>
+  
+        <!-- Botones -->
+        <div class="flex gap-3">
+          <button
+            class="bg-blue-600 text-white font-medium rounded-lg px-4 py-2 hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 transition-transform transform hover:scale-105"
+            (click)="showImage()"
+          >
+            {{ muestraImg ? 'Ocultar' : 'Mostrar' }} Password
+          </button>
+          <button
+            class="bg-indigo-600 text-white font-medium rounded-lg px-4 py-2 hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-300 transition-transform transform hover:scale-105"
+            [routerLink]="['/usuariosr/agregar']"
+          >
+            Agregar Usuario
+          </button>
+        </div>
+      </div>
+  
+      <!-- Tabla -->
+      <div class="overflow-x-auto bg-white shadow-lg rounded-lg">
+        <table class="w-full text-sm text-gray-700" *ngIf="dataSource.length">
+          <thead class="bg-gray-100">
+            <tr>
+              <th class="px-6 py-3">ID</th>
+              <th class="px-6 py-3">Usuario</th>
+              <th class="px-6 py-3">Email</th>
+              <th class="px-6 py-3" *ngIf="muestraImg">Password</th>
+              <th class="px-6 py-3">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              *ngFor="let usuario of dataSource | usuarioFilter: listFilter"
+              class="border-b hover:bg-gray-50 transition-colors"
+            >
+              <td class="px-6 py-4">{{ usuario.userName }}</td>
+              <td class="px-6 py-4">{{ usuario.userName | uppercase }}</td>
+              <td class="px-6 py-4">{{ usuario.email }}</td>
+              <td class="px-6 py-4" *ngIf="muestraImg">{{ usuario.password }}</td>
+              <td class="px-6 py-4 flex gap-3">
+                <button
+                  class="bg-green-500 text-white hover:bg-green-600 focus:ring-4 focus:ring-green-300 rounded-lg px-4 py-2 text-xs font-medium transition-transform transform hover:scale-105"
+                  [routerLink]="['/usuariosr/editar', usuario.userName]"
+                >
+                  Editar
+                </button>
+                <button
+                  class="bg-red-500 text-white hover:bg-red-600 focus:ring-4 focus:ring-red-300 rounded-lg px-4 py-2 text-xs font-medium transition-transform transform hover:scale-105"
+                  [routerLink]="['/usuariosr/eliminar', usuario.userName]"
+                >
+                  Eliminar
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+  
+        <!-- Sin datos -->
+        <div *ngIf="!dataSource.length" class="text-center py-6 text-gray-500">
+          No se encontraron usuarios
+        </div>
+      </div>
+    </div>
+  </div>
+  
